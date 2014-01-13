@@ -16,11 +16,6 @@ describe SaleOfStock do
     @sale_of_stock.stock_item.must_be_instance_of StockItem
   end
 
-  it "can calculate relevant transactions case 1" do
-    expected_prices = [[10, 10], [10, 5]]
-    @sale_of_stock.relevant_transactions.must_equal expected_prices
-  end
-
   it "knows how much each item sold for" do
     @sale_of_stock.sale_price.must_equal 12
   end
@@ -48,9 +43,7 @@ describe SaleOfStock do
       StockTransaction.new(today, 2, -30)
     ]
     new_sale = SaleOfStock.new(StockItem.new('Pencils', transactions))
-    expected_transactions = [[10, 10], [5, -15], [5, 11], [2, -15]]
     expected_prices = [[3, 10], [5, 11]]
-    new_sale.relevant_transactions.must_equal expected_transactions
     new_sale.purchase_prices.must_equal expected_prices
   end
 

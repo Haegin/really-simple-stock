@@ -18,46 +18,20 @@ class SaleOfStock
     @sale.quantity
   end
 
-  def relevant_transactions
-    if defined? @relevant_transactions
-      @relevant_transactions
-    else
-      @relevant_transactions = [].tap do |transactions|
-        running_total = @stock_item.quantity + @sale.quantity
-        prior_transactions = stock_item.transactions[0..-2]
-        while running_total > 0
-          t = prior_transactions.pop
-          if t.purchase?
-            running_total -= t.quantity
-            transactions.unshift([t.quantity, t.price_per_item])
-          else
-            running_total += t.quantity
-            transactions.unshift([t.quantity, -t.price_per_item])
-          end
-        end
-      end
-    end
-  end
-
   def purchase_prices
     if defined? @purchase_prices
       @purchase_prices
     else
       @purchase_prices = [].tap do |unsold|
-        relevant_transactions.each do |qty, amount|
-          if amount >= 0
-            unsold.push([qty, amount])
-          else
-            while qty > 0
-              purchase_qty, purchase_amount = unsold.shift
-              if purchase_qty > qty
-                unsold.unshift([purchase_qty - qty, purchase_amount])
-                qty = 0
-              else
-                qty -= purchase_qty
-              end
-            end
-          end
+        # Under FIFO, the last item I sell is the most recent one I purchased,
+        # thus if I have 20 items on hand they're the last 20 I bought.
+        stock_on_hand = @stock_item.quantity + @sale.quantity
+        purchases = @stock_item.transactions.select {|t| t.purchase? }
+        while stock_on_hand > 0
+          purchase = purchases.pop
+          qty_in_this_purchase = [purchase.quantity, stock_on_hand].min
+          unsold.unshift([qty_in_this_purchase, purchase.price_per_item])
+          stock_on_hand -= qty_in_this_purchase
         end
       end
     end
