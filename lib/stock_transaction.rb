@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 class StockTransaction
   attr_reader :date, :quantity, :amount
 
@@ -6,7 +8,11 @@ class StockTransaction
 
     @date = date
     @quantity = quantity
-    @amount = amount
+    @amount = if amount.is_a? BigDecimal
+      amount
+    else
+      BigDecimal.new(amount)
+    end
   end
 
   def purchase?
@@ -23,9 +29,9 @@ class StockTransaction
 
   def to_s
     if purchase?
-      "<Purchase: #{quantity} @ #{price_per_item}>"
+      "<Purchase: #{quantity} @ #{price_per_item.to_s('F')}>"
     elsif sale?
-      "<Sale: #{quantity} @ #{price_per_item}>"
+      "<Sale: #{quantity} @ #{price_per_item.to_s('F')}>"
     end
   end
 

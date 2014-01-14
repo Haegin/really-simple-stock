@@ -2,27 +2,44 @@ require 'test_helper'
 require 'stock_transaction'
 
 describe StockTransaction do
+
   it "can be created with a date, quantity and amount" do
-    StockTransaction.new(yesterday, 1, 1).must_be_instance_of StockTransaction
+    StockTransaction.new(today, 10, 100).must_be_instance_of StockTransaction
   end
 
-  it "knows if it's a purchase or sale" do
-    purchase = StockTransaction.new(today, 10, 100)
-    sale = StockTransaction.new(today, 10, -100)
+  describe "purchases" do
+    subject { StockTransaction.new(today, 10, 100) }
 
-    purchase.purchase?.must_equal true
-    sale.purchase?.must_equal false
+    it "is a purchase" do
+      subject.purchase?.must_equal true
+    end
 
-    purchase.sale?.must_equal false
-    sale.sale?.must_equal true
+    it "is not a sale" do
+      subject.sale?.must_equal false
+    end
+
+    it "is a purchase if it's free" do
+      StockTransaction.new(today, 10, 0).purchase?.must_equal true
+    end
+
+    it "has a helpful to_s" do
+      subject.to_s.must_equal "<Purchase: 10 @ 10.0>"
+    end
   end
 
-  it "is a purchase if it's free" do
-    StockTransaction.new(today, 10, 0).purchase?.must_equal true
-  end
+  describe "sales" do
+    subject { StockTransaction.new(today, 10, -100) }
 
-  it "has a helpful to_s" do
-    StockTransaction.new(today, 10, 100).to_s.must_equal "<Purchase: 10 @ 10>"
-    StockTransaction.new(today, 10, -100).to_s.must_equal "<Sale: 10 @ 10>"
+    it "is a sale" do
+      subject.sale?.must_equal true
+    end
+
+    it "is not a purchase" do
+      subject.purchase?.must_equal false
+    end
+
+    it "has a helpful to_s" do
+      subject.to_s.must_equal "<Sale: 10 @ 10.0>"
+    end
   end
 end
