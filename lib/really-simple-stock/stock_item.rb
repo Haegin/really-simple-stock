@@ -1,6 +1,3 @@
-require 'stock_transaction'
-require 'sale_of_stock'
-
 class StockItem
   attr_reader :name, :transactions
 

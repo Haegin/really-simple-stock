@@ -4,6 +4,8 @@ require 'bundler/setup'
 require 'minitest/autorun'
 require 'minitest/ansi'
 
+require 'really_simple_stock'
+
 def today
   Date.today
 end

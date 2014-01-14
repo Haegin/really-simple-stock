@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'sale_of_stock'
 
 describe SaleOfStock do
 

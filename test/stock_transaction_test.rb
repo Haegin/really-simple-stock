@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'stock_transaction'
 
 describe StockTransaction do
 

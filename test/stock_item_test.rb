@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'stock_item'
 
 describe StockItem do
   before do
